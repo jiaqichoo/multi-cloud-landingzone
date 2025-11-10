@@ -38,9 +38,8 @@ jobs:
 
     # Step 5: Terraform Format Check
     - name: Terraform Format Check
-      run: terraform fmt -check
-      working-directory: stacks/dev-aws
-
+      run: terraform fmt -recursive
+      
     # Step 6: Terraform Plan
     - name: Terraform Plan
       run: terraform plan -no-color

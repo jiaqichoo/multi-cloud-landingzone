@@ -10,20 +10,39 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Plan
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Step 2: Setup Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.7.0
 
+    # Step 3: Configure AWS credentials
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    # Step 4: Terraform Init
     - name: Terraform Init
       run: terraform init
+      working-directory: stacks/dev-aws
 
+    # Step 5: Terraform Format Check
+    - name: Terraform Format Check
+      run: terraform fmt -check
+      working-directory: stacks/dev-aws
+
+    # Step 6: Terraform Plan
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -no-color
+      working-directory: stacks/dev-aws
+
